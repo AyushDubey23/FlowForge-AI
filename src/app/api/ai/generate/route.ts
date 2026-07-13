@@ -115,31 +115,42 @@ export async function POST(req: Request) {
   }
 }
 
-// Sandbox mockup workflow dictionary
 function getMockWorkflow(prompt: string) {
   const p = prompt.toLowerCase();
   
-  if (p.includes("github") || p.includes("discord")) {
+  if (p.includes("github") || p.includes("discord") || p.includes("slack")) {
     return {
       nodes: [
         {
           id: "webhook_1",
           type: "webhook",
-          position: { x: 100, y: 150 },
+          position: { x: 80, y: 220 },
           data: {
-            label: "Github Issue Opened Trigger",
-            description: "Triggers on webhook calls when a new Github issue is opened.",
+            label: "Github Webhook Trigger",
+            description: "Listens for repository issue open payload events.",
             webhookUrl: "https://api.flowforge.ai/v1/trigger/webhook_1",
             method: "POST",
           },
         },
         {
+          id: "condition_1",
+          type: "condition",
+          position: { x: 380, y: 220 },
+          data: {
+            label: "Check Priority Severity",
+            description: "Routes logic branches depending on issue labels.",
+            variable: "issue.label",
+            value: "critical",
+          },
+        },
+        // True Path (Critical Issues)
+        {
           id: "aiPrompt_1",
           type: "aiPrompt",
-          position: { x: 420, y: 150 },
+          position: { x: 680, y: 80 },
           data: {
-            label: "Gemini Issue Summarizer",
-            description: "Summarizes the Github issue description into bullet points.",
+            label: "Gemini Critical Summarizer",
+            description: "Distills critical issue details into bullet points.",
             prompt: "Summarize this issue body details:\n\n{{input.body.issue.body}}",
             temperature: 0.7,
           },
@@ -147,62 +158,153 @@ function getMockWorkflow(prompt: string) {
         {
           id: "notification_1",
           type: "notification",
-          position: { x: 740, y: 150 },
+          position: { x: 980, y: 80 },
           data: {
-            label: "Post to Discord Channel",
-            description: "Sends summarized text card content directly to Discord webhook channel.",
-            message: "📢 **New Github Issue Summary:**\n{{input.aiPrompt_1.output}}",
+            label: "Discord Critical Alert Channel",
+            description: "Sends customized Discord card notifications.",
+            message: "🚨 **CRITICAL GitHub Issue Alert:**\n{{input.aiPrompt_1.output}}",
+          },
+        },
+        {
+          id: "firestore_1",
+          type: "firestore",
+          position: { x: 1280, y: 80 },
+          data: {
+            label: "Firestore Incident Logger",
+            description: "Logs critical incident entries inside the db tracker.",
+            collection: "incidents",
+            action: "write",
+          },
+        },
+        // False Path (Routine Issues)
+        {
+          id: "email_1",
+          type: "email",
+          position: { x: 680, y: 380 },
+          data: {
+            label: "Auto-Acknowledgement Responder",
+            description: "Sends standard support ticket replies to issue reporter.",
+            to: "reporter@github.com",
+            subject: "Thank you for reporting #{{input.body.issue.number}}",
+            body: "Hello, we have received your issue report. Our team will review it shortly.",
+          },
+        },
+        {
+          id: "delay_1",
+          type: "delay",
+          position: { x: 980, y: 380 },
+          data: {
+            label: "Batch Processing Delay",
+            description: "Delays next operations by 15 minutes.",
+            seconds: 900,
+          },
+        },
+        {
+          id: "http_1",
+          type: "http",
+          position: { x: 1280, y: 380 },
+          data: {
+            label: "Linear Ticket Creator Task",
+            description: "Pipes routine backlog items to Linear ticketing endpoints.",
+            url: "https://api.linear.app/v1/issues",
+            method: "POST",
           },
         },
       ],
       edges: [
-        { id: "e1-2", source: "webhook_1", target: "aiPrompt_1" },
-        { id: "e2-3", source: "aiPrompt_1", target: "notification_1" },
+        { id: "e1-2", source: "webhook_1", target: "condition_1" },
+        // True branch links
+        { id: "e2-3_true", source: "condition_1", target: "aiPrompt_1", sourceHandle: "true" },
+        { id: "e3-4", source: "aiPrompt_1", target: "notification_1" },
+        { id: "e4-5", source: "notification_1", target: "firestore_1" },
+        // False branch links
+        { id: "e2-6_false", source: "condition_1", target: "email_1", sourceHandle: "false" },
+        { id: "e6-7", source: "email_1", target: "delay_1" },
+        { id: "e7-8", source: "delay_1", target: "http_1" },
       ],
-      explanation: "This workflow initiates when Github pushes an issue payload to our Webhook trigger. We pipe the payload through Gemini to summarize and format details, then deliver it instantly to Discord.",
+      explanation: "This workflow initiates when Github pushes an issue payload to our Webhook trigger. It routes high-severity incidents to be summarized by Gemini, alerted on Discord, and logged in Firestore. Standard tickets trigger an auto-reply and are queued into Linear after a short delay.",
     };
   }
 
-  // Fallback default automation
+  // Fallback default complex automation
   return {
     nodes: [
       {
         id: "manual_1",
         type: "manual",
-        position: { x: 100, y: 150 },
+        position: { x: 80, y: 220 },
         data: {
-          label: "Manual Trigger Run",
-          description: "Initiates flow manually using input test payload.",
+          label: "Manual Sandbox Run",
+          description: "Initiates flow manually with custom test payloads.",
         },
       },
       {
+        id: "js_1",
+        type: "js",
+        position: { x: 380, y: 220 },
+        data: {
+          label: "JS Payload Validator",
+          description: "Sanitizes and normalizes input objects.",
+          code: "const data = input.body;\nreturn {\n  valid: !!data.email,\n  email: data.email\n};",
+        },
+      },
+      {
+        id: "condition_2",
+        type: "condition",
+        position: { x: 680, y: 220 },
+        data: {
+          label: "Validation Gateway",
+          description: "Filters validated user accounts.",
+          variable: "valid",
+          value: "true",
+        },
+      },
+      // Valid path
+      {
         id: "aiPrompt_2",
         type: "aiPrompt",
-        position: { x: 420, y: 150 },
+        position: { x: 980, y: 80 },
         data: {
-          label: "Gemini Draft Copilot",
-          description: "Performs natural language tasks on inputs.",
-          prompt: "Suggest improvements to the following payload data:\n\n{{input.body}}",
+          label: "Gemini Copilot Draft Generator",
+          description: "Performs natural language copilot operations.",
+          prompt: "Draft a personalized email for user:\n\n{{input.js_1.email}}",
           temperature: 0.75,
         },
       },
       {
         id: "email_2",
         type: "email",
-        position: { x: 740, y: 150 },
+        position: { x: 1280, y: 80 },
         data: {
-          label: "Email Summaries Outbox",
-          description: "Sends customized email summary.",
-          to: "user@domain.com",
-          subject: "FlowForge AI Assistant Update",
-          body: "Hello, here is your workflow suggestion:\n\n{{input.aiPrompt_2.output}}",
+          label: "User Onboarding Outbox",
+          description: "Delivers welcome messages to the customer.",
+          to: "{{input.js_1.email}}",
+          subject: "Welcome to FlowForge AI!",
+          body: "{{input.aiPrompt_2.output}}",
+        },
+      },
+      // Invalid path
+      {
+        id: "firestore_2",
+        type: "firestore",
+        position: { x: 980, y: 360 },
+        data: {
+          label: "Firestore Error Logger",
+          description: "Persists parsing failures.",
+          collection: "errors",
+          action: "write",
         },
       },
     ],
     edges: [
-      { id: "e_m-ai", source: "manual_1", target: "aiPrompt_2" },
+      { id: "e_m-js", source: "manual_1", target: "js_1" },
+      { id: "e_js-cond", source: "js_1", target: "condition_2" },
+      // Valid path links
+      { id: "e_cond-ai_true", source: "condition_2", target: "aiPrompt_2", sourceHandle: "true" },
       { id: "e_ai-email", source: "aiPrompt_2", target: "email_2" },
+      // Invalid path links
+      { id: "e_cond-fs_false", source: "condition_2", target: "firestore_2", sourceHandle: "false" },
     ],
-    explanation: "This basic template lets you manually invoke a test run, compile summaries using Gemini, and receive notifications via email.",
+    explanation: "This workflow validates manually triggered payloads using custom JavaScript blocks. Validated users receive customized onboarding drafts compiled by Gemini via email, while failed payloads are logged to the Firestore database error tracker.",
   };
 }

@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import ThreeDBackground from "@/components/ui/ThreeDBackground";
 
 // Interactive Workflow Simulator nodes data
 const simulatorNodes = [
@@ -57,6 +58,9 @@ export default function LandingPage() {
 
   return (
     <div className="flex-1 bg-black text-foreground font-sans relative overflow-x-hidden min-h-screen">
+      {/* 3D Plexus Particle Starfield constellation background */}
+      <ThreeDBackground />
+
       {/* Background glowing meshes */}
       <div className="absolute top-[-10%] left-[10%] w-[800px] h-[800px] bg-primary/10 rounded-full blur-[180px] pointer-events-none" />
       <div className="absolute bottom-[20%] right-[-10%] w-[600px] h-[600px] bg-violet-600/5 rounded-full blur-[150px] pointer-events-none" />

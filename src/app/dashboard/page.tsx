@@ -108,7 +108,7 @@ const mockExecutions = [
 export default function DashboardPage() {
   const { profile, activeWorkspace } = useAuth();
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
-  const [sandboxMode, setSandboxMode] = useState(true);
+  const [sandboxMode, setSandboxMode] = useState(false);
   const router = useRouter();
 
   // Load real workflows from Firestore
@@ -143,8 +143,8 @@ export default function DashboardPage() {
   // Compute metrics based on display mode
   const activeWfsCount = sandboxMode ? 2 : workflows.filter((w) => w.isActive).length;
   const totalWfsCount = sandboxMode ? mockWorkflows.length : workflows.length;
-  const successRate = sandboxMode ? "98.2%" : "100%";
-  const runsCount = sandboxMode ? 2640 : workflows.length * 12; // Dynamic estimation
+  const successRate = sandboxMode ? "98.2%" : "0%";
+  const runsCount = sandboxMode ? 2640 : 0; // Starts at zero for real users
 
   return (
     <div className="flex-1 p-6 space-y-8 max-w-7xl mx-auto w-full font-sans">
