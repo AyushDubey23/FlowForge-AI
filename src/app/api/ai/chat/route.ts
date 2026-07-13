@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     }
 
     // Call real Gemini API
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${apiKey}`;
 
     let promptText = "";
     if (action === "explain") {
