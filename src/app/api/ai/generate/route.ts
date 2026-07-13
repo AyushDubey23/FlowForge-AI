@@ -89,7 +89,18 @@ export async function POST(req: Request) {
       throw new Error("Empty response from AI engine.");
     }
 
-    const parsed = JSON.parse(textResult);
+    // Robustly extract the JSON object block from the response
+    const cleanJsonResponse = (text: string): string => {
+      const start = text.indexOf("{");
+      const end = text.lastIndexOf("}");
+      if (start !== -1 && end !== -1 && end > start) {
+        return text.substring(start, end + 1);
+      }
+      return text;
+    };
+
+    const cleanedText = cleanJsonResponse(textResult);
+    const parsed = JSON.parse(cleanedText);
 
     return NextResponse.json({
       success: true,
