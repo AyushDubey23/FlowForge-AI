@@ -19,8 +19,8 @@ export async function POST(req: Request) {
       });
     }
 
-    // Call real Google Gemini API (2.5 Flash structured output mode)
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    // Call real Google Gemini API (3.5 Flash structured output mode)
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
 
     const systemInstruction = `
       You are the FlowForge AI Workflow Architect. Convert the user's request into a structured JSON workflow automation diagram.
