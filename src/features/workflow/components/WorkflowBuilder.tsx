@@ -22,6 +22,7 @@ import {
   Play,
   CheckCircle,
   AlertTriangle,
+  Camera,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -65,6 +66,52 @@ const Canvas: React.FC<{ workflowId: string }> = ({ workflowId }) => {
   } = useWorkflowStore();
 
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("saved");
+  const [exporting, setExporting] = useState(false);
+
+  const downloadCanvasImage = async () => {
+    if (!reactFlowWrapper.current) return;
+
+    try {
+      setExporting(true);
+      // Wait for rendering styles to settle
+      await new Promise((resolve) => setTimeout(resolve, 150));
+
+      const { toPng } = await import("html-to-image");
+
+      // Hide control widgets temporarily for screenshot
+      const controls = document.querySelector(".react-flow__controls") as HTMLElement;
+      const minimap = document.querySelector(".react-flow__minimap") as HTMLElement;
+      const attribution = document.querySelector(".react-flow__attribution") as HTMLElement;
+
+      if (controls) controls.style.display = "none";
+      if (minimap) minimap.style.display = "none";
+      if (attribution) attribution.style.display = "none";
+
+      const dataUrl = await toPng(reactFlowWrapper.current, {
+        backgroundColor: "#030303",
+        style: {
+          width: reactFlowWrapper.current.offsetWidth.toString(),
+          height: reactFlowWrapper.current.offsetHeight.toString(),
+          transform: "none",
+        },
+      });
+
+      // Restore widgets
+      if (controls) controls.style.display = "flex";
+      if (minimap) minimap.style.display = "block";
+      if (attribution) attribution.style.display = "block";
+
+      const link = document.createElement("a");
+      link.download = `flowforge-canvas-${workflowId}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Failed to export workflow canvas:", err);
+      alert("Failed to export canvas image.");
+    } finally {
+      setExporting(false);
+    }
+  };
 
   // Keyboard Shortcuts for Undo & Redo
   useEffect(() => {
@@ -202,6 +249,20 @@ const Canvas: React.FC<{ workflowId: string }> = ({ workflowId }) => {
             className="h-8 w-8 text-muted-foreground hover:text-foreground disabled:opacity-30"
           >
             <Redo2 className="h-4.5 w-4.5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={downloadCanvasImage}
+            disabled={exporting || nodes.length === 0}
+            title="Download workflow grid image"
+            className="h-8 w-8 text-muted-foreground hover:text-foreground disabled:opacity-30"
+          >
+            {exporting ? (
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            ) : (
+              <Camera className="h-4.5 w-4.5" />
+            )}
           </Button>
           <div className="w-[1px] bg-border h-6 my-1" />
           <Button

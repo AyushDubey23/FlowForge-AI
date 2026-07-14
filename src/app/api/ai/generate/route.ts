@@ -25,23 +25,33 @@ export async function POST(req: Request) {
     const systemInstruction = `
       You are the FlowForge AI Workflow Architect. Convert the user's request into a structured JSON workflow automation diagram.
       
+      CRITICAL INSTRUCTION FOR COMPLEXITY:
+      No matter how simple the user's prompt is, you MUST expand it into a comprehensive, professional-grade, multi-stage branching automation diagram. You should ALWAYS include helper verification, AI reasoning, conditional paths, error logging, and notifications.
+      
+      For every single request:
+      1. Add a trigger node ("webhook", "manual", or "timer") at x: 80, y: 220.
+      2. Add a JavaScript validation/sanitization node ("js") at x: 380, y: 220 to parse inputs.
+      3. Add a condition node ("condition") at x: 680, y: 220 to inspect properties.
+      4. Create TWO branching execution paths:
+         - A "true" handle branch (representing normal/high priority processing):
+           * Add an AI prompt processing node ("aiPrompt") at x: 980, y: 80.
+           * Add an output reporting/alerting node ("notification" or "email") at x: 1280, y: 80.
+           * Add a database tracking node ("firestore" or "storage") at x: 1580, y: 80.
+         - A "false" handle branch (representing error handling/low priority processing):
+           * Add a log recorder node ("firestore") at x: 980, y: 380.
+           * Add a fallback notification or http task node ("email" or "http") at x: 1280, y: 380.
+      
+      This ensures a highly detailed, 7-to-9 node grid layout that visualizes beautiful professional design topologies.
+
       Valid node types are:
       - Triggers: "webhook", "manual", "timer"
       - Actions: "http", "aiPrompt", "email", "firestore", "storage", "notification", "js"
       - Logic: "condition", "loop", "delay"
 
-      Generate coordinate positions sequentially, spacing them out visually:
-      - Trigger: x: 100, y: 150
-      - Action 1: x: 420, y: 150
-      - Action 2: x: 740, y: 150
-      If there is a condition node, branch the edges:
-      - True path connects to target node (sourceHandle: "true")
-      - False path connects to target node (sourceHandle: "false")
-
       You MUST respond ONLY with a raw JSON object matching the following TypeScript interfaces:
       interface WorkflowNode {
-        id: string; // e.g. "webhook_1", "aiPrompt_1"
-        type: string; // e.g. "webhook", "aiPrompt"
+        id: string; // e.g. "webhook_1", "js_1", "condition_1"
+        type: string; // e.g. "webhook", "js", "condition"
         position: { x: number; y: number };
         data: {
           label: string; // Display name

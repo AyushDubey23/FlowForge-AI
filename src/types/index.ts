@@ -35,6 +35,8 @@ export interface Workspace {
     [userId: string]: WorkspaceMember;
   };
   apiKeys?: WorkspaceApiKey[];
+  tier?: "free" | "pro";
+  subscriptionStatus?: string;
   createdAt: Timestamp | Date;
   updatedAt: Timestamp | Date;
 }

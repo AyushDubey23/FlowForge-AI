@@ -13,15 +13,36 @@ import {
   Copy,
   Check,
   Lock,
+  CreditCard,
+  Sparkles,
+  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") {
+      resolve(false);
+      return;
+    }
+    if ((window as any).Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 export default function SettingsPage() {
   const { user, profile, activeWorkspace, updateProfile } = useAuth();
-  const [activeTab, setActiveTab] = useState<"profile" | "keys" | "members">("profile");
+  const [activeTab, setActiveTab] = useState<"profile" | "keys" | "members" | "billing">("profile");
 
   // Profile Settings
   const [displayName, setDisplayName] = useState(profile?.displayName || "");
@@ -35,6 +56,85 @@ export default function SettingsPage() {
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // Billing Settings
+  const [upgrading, setUpgrading] = useState(false);
+
+  const handleUpgrade = async () => {
+    if (!activeWorkspace?.id) return;
+
+    try {
+      setUpgrading(true);
+      // 1. Create order ID
+      const orderRes = await fetch("/api/payment/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workspaceId: activeWorkspace.id }),
+      });
+      const orderData = await orderRes.json();
+      if (!orderData.success) {
+        throw new Error(orderData.error || "Order creation failed");
+      }
+
+      // 2. Load script
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        alert("Failed to load Razorpay SDK. Check your internet connection.");
+        return;
+      }
+
+      // 3. Open Checkout
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_placeholder",
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "FlowForge AI",
+        description: "Upgrade Workspace to Pro Plan",
+        order_id: orderData.orderId,
+        handler: async function (response: any) {
+          try {
+            setUpgrading(true);
+            const verifyRes = await fetch("/api/payment/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                workspaceId: activeWorkspace.id,
+                isMock: orderData.isMock,
+              }),
+            });
+            const verifyData = await verifyRes.json();
+            if (verifyData.success) {
+              alert("Congratulations! Your workspace has been upgraded to Pro.");
+              window.location.reload();
+            } else {
+              alert(`Verification failed: ${verifyData.error}`);
+            }
+          } catch (err: any) {
+            alert(`Payment verification error: ${err.message}`);
+          } finally {
+            setUpgrading(false);
+          }
+        },
+        prefill: {
+          name: profile?.displayName || "",
+          email: profile?.email || "",
+        },
+        theme: {
+          color: "#7c3aed",
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (err: any) {
+      alert(`Payment checkout initialization error: ${err.message}`);
+    } finally {
+      setUpgrading(false);
+    }
+  };
 
   // Members Settings
   const [inviteEmail, setInviteEmail] = useState("");
@@ -171,6 +271,7 @@ export default function SettingsPage() {
     { id: "profile", name: "Account Profile", icon: <User className="h-4 w-4" /> },
     { id: "keys", name: "Developer API Keys", icon: <Key className="h-4 w-4" /> },
     { id: "members", name: "Workspace Team", icon: <Users className="h-4 w-4" /> },
+    { id: "billing", name: "Billing & Plans", icon: <CreditCard className="h-4 w-4" /> },
   ] as const;
 
   return (
@@ -423,6 +524,113 @@ export default function SettingsPage() {
                 })}
             </CardContent>
           </Card>
+        </div>
+      )}
+
+      {/* Billing & Plans View */}
+      {activeTab === "billing" && (
+        <div className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Free Tier Card */}
+            <Card className="glass-panel relative overflow-hidden border-border/80">
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] bg-zinc-900 border border-border px-2 py-0.5 rounded font-bold uppercase tracking-wider text-muted-foreground">
+                    {activeWorkspace?.tier !== "pro" ? "Current Plan" : "Available"}
+                  </span>
+                </div>
+                <CardTitle className="text-xl font-bold mt-2">Free Community Sandbox</CardTitle>
+                <CardDescription className="text-xs">
+                  For hobbyists exploring natural language workflow generation.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-extrabold text-foreground">₹0</span>
+                  <span className="text-xs text-muted-foreground">/ month</span>
+                </div>
+                
+                <div className="space-y-2 border-t border-border/40 pt-4 text-xs text-muted-foreground">
+                  <p className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                    Up to 3 active workflows
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                    100 free Gemini runs per month
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                    Standard execution speed limits
+                  </p>
+                </div>
+              </CardContent>
+              <CardFooter className="pt-2">
+                <Button variant="outline" className="w-full text-xs font-bold" disabled={activeWorkspace?.tier !== "pro"}>
+                  {activeWorkspace?.tier !== "pro" ? "Active Subscription" : "Free Plan Option"}
+                </Button>
+              </CardFooter>
+            </Card>
+
+            {/* Pro Tier Card */}
+            <Card className="glass-panel relative overflow-hidden border-primary/30 bg-primary/5">
+              <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-primary to-violet-500" />
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] bg-primary/20 border border-primary/30 px-2 py-0.5 rounded font-bold uppercase tracking-wider text-primary flex items-center gap-1">
+                    <Sparkles className="h-3 w-3" />
+                    {activeWorkspace?.tier === "pro" ? "Active Plan" : "Most Popular"}
+                  </span>
+                </div>
+                <CardTitle className="text-xl font-bold mt-2">FlowForge Pro Architect</CardTitle>
+                <CardDescription className="text-xs">
+                  Unlock advanced branching blueprints, priority processing, and unlimited AI execution logs.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-extrabold text-foreground">₹1,499</span>
+                  <span className="text-xs text-muted-foreground">/ month</span>
+                </div>
+
+                <div className="space-y-2 border-t border-primary/25 pt-4 text-xs text-zinc-300">
+                  <p className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                    <strong>Unlimited</strong> active workflows
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                    Priority execution scheduling
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                    Advanced conditional branching nodes
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                    Priority 24/7 developer ticket support
+                  </p>
+                </div>
+              </CardContent>
+              <CardFooter className="pt-2">
+                {activeWorkspace?.tier === "pro" ? (
+                  <Button variant="outline" className="w-full text-xs font-bold border-primary/40 text-primary bg-primary/5 hover:bg-primary/10" disabled>
+                    ✓ Subscribed as Pro
+                  </Button>
+                ) : (
+                  <Button
+                    variant="primary"
+                    className="w-full text-xs font-bold gap-1.5"
+                    onClick={handleUpgrade}
+                    isLoading={upgrading}
+                  >
+                    <Zap className="h-3.5 w-3.5 fill-current" />
+                    Upgrade Workspace
+                  </Button>
+                )}
+              </CardFooter>
+            </Card>
+          </div>
         </div>
       )}
     </div>
