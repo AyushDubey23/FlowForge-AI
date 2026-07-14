@@ -13,7 +13,7 @@ interface ChatMessage {
 }
 
 export const AiCopilotSidebar: React.FC = () => {
-  const { nodes, edges, setNodes, setEdges, clearCanvas } = useWorkflowStore();
+  const { nodes, edges, loadWorkflow } = useWorkflowStore();
   const [tab, setTab] = useState<"generate" | "assistant">("generate");
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
@@ -46,10 +46,8 @@ export const AiCopilotSidebar: React.FC = () => {
       const res = await response.json();
 
       if (res.success) {
-        // Overwrite canvas with AI generated layout
-        clearCanvas();
-        setNodes(res.nodes);
-        setEdges(res.edges);
+        // Overwrite canvas with AI generated layout atomically
+        loadWorkflow(res.nodes || [], res.edges || []);
         
         if (res.isMock) {
           setWarning("AI Sandbox Mode: Generated a template workflow. Configure your GEMINI_API_KEY in .env.local to activate dynamic custom generations.");

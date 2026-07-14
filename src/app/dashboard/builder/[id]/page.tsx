@@ -29,7 +29,7 @@ export default function BuilderPage() {
   const workflowId = params.id as string;
 
   const { activeWorkspace } = useAuth();
-  const { setNodes, setEdges, clearCanvas, selectedNodeId, selectNode } = useWorkflowStore();
+  const { loadWorkflow, clearCanvas, selectedNodeId, selectNode } = useWorkflowStore();
 
   const [workflow, setWorkflow] = useState<Workflow | null>(null);
   const [loading, setLoading] = useState(true);
@@ -77,12 +77,10 @@ export default function BuilderPage() {
 
         if (verSnap.exists()) {
           const verData = verSnap.data() as WorkflowVersion;
-          setNodes(verData.nodes || []);
-          setEdges(verData.edges || []);
+          loadWorkflow(verData.nodes || [], verData.edges || []);
         } else {
           // Initialize empty
-          setNodes([]);
-          setEdges([]);
+          loadWorkflow([], []);
         }
       } catch (err) {
         console.error("Failed to load builder workspace:", err);
@@ -98,7 +96,7 @@ export default function BuilderPage() {
     return () => {
       clearCanvas();
     };
-  }, [activeWorkspace?.id, workflowId, clearCanvas, setEdges, setNodes]);
+  }, [activeWorkspace?.id, workflowId, clearCanvas, loadWorkflow]);
 
   // Auto switch RHS panel to config mode when a node is clicked/selected
   useEffect(() => {

@@ -39,6 +39,7 @@ interface CanvasState {
   duplicateWorkflowNode: (nodeId: string) => void;
   updateNodeData: (nodeId: string, data: Record<string, unknown>) => void;
   clearCanvas: () => void;
+  loadWorkflow: (nodes: Node[], edges: Edge[]) => void;
 }
 
 const initialNodes: Node[] = [];
@@ -215,6 +216,16 @@ export const useWorkflowStore = create<CanvasState>((set, get) => ({
     set({
       nodes: [],
       edges: [],
+      selectedNodeId: null,
+      undoStack: [],
+      redoStack: [],
+    });
+  },
+
+  loadWorkflow: (nodes, edges) => {
+    set({
+      nodes: JSON.parse(JSON.stringify(nodes)),
+      edges: JSON.parse(JSON.stringify(edges)),
       selectedNodeId: null,
       undoStack: [],
       redoStack: [],
