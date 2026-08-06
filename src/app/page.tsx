@@ -268,9 +268,6 @@ export default function LandingPage() {
         </div>
       </motion.section>
 
-      {/* Flagship Apple/Linear Scrollytelling Showcase */}
-      <ScrollVideoShowcase />
-
       {/* Interactive Doppelrand Playground Simulator Block */}
       <motion.section
         id="sandbox"
@@ -305,8 +302,24 @@ export default function LandingPage() {
                   value={simulationPrompt}
                   onChange={(e) => setSimulationPrompt(e.target.value)}
                   disabled={simulating}
-                  className="w-full h-11 px-4 text-xs rounded-xl border border-white/10 bg-black/60 text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500 focus-visible:border-cyan-500 disabled:opacity-50 font-mono"
+                  className="w-full h-11 px-4 text-xs rounded-xl border border-white/10 bg-black/60 text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500 focus-visible:border-cyan-500 disabled:opacity-50 font-mono mb-2"
                 />
+                {/* Sample Prompt Preset Pills */}
+                <div className="flex items-center gap-2 overflow-x-auto text-[10px] font-mono text-zinc-400">
+                  <span className="text-zinc-500">Presets:</span>
+                  <button
+                    onClick={() => setSimulationPrompt("When a GitHub issue is created, summarize it with AI and send it to Discord.")}
+                    className="hover:text-cyan-400 bg-white/5 hover:bg-cyan-500/10 px-2 py-0.5 rounded border border-white/10 transition-colors shrink-0"
+                  >
+                    GitHub Issue → Discord
+                  </button>
+                  <button
+                    onClick={() => setSimulationPrompt("On Stripe payment received, calculate tax and write transaction to database.")}
+                    className="hover:text-cyan-400 bg-white/5 hover:bg-cyan-500/10 px-2 py-0.5 rounded border border-white/10 transition-colors shrink-0"
+                  >
+                    Stripe → Database
+                  </button>
+                </div>
               </div>
               <button
                 onClick={handleSimulate}
