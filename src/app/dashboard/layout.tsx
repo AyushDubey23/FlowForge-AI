@@ -17,6 +17,7 @@ import {
   Menu,
   X,
   Keyboard,
+  Search,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -45,7 +46,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex min-h-screen flex-1 flex-col items-center justify-center bg-black">
         <div className="flex flex-col items-center gap-4">
           <Activity className="h-10 w-10 animate-pulse text-primary" />
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <p className="text-xs font-medium uppercase tracking-widest text-zinc-500 font-mono">
             Loading Workspace...
           </p>
         </div>
@@ -96,28 +97,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="flex min-h-screen bg-black text-foreground font-sans relative">
-      {/* Background Radial Glow */}
+      {/* Background Radial Mesh Glow */}
       <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[140px] pointer-events-none" />
 
-      {/* Sidebar - Desktop Layout */}
-      <aside className="hidden md:flex flex-col w-64 border-r border-border bg-card/45 backdrop-blur-md shrink-0">
+      {/* Sidebar - Desktop Agency Layout */}
+      <aside className="hidden md:flex flex-col w-64 border-r border-white/10 bg-zinc-950/80 backdrop-blur-xl shrink-0 z-20">
         {/* Brand Header */}
-        <div className="flex h-16 items-center px-6 gap-2.5 border-b border-border/80">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-violet-600 shadow shadow-primary/25">
+        <div className="flex h-16 items-center px-6 gap-3 border-b border-white/10">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-violet-600 shadow-md shadow-primary/20">
             <Activity className="h-4.5 w-4.5 text-white" />
           </div>
-          <span className="font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+          <span className="font-bold text-base tracking-tight text-white">
             FlowForge AI
           </span>
         </div>
 
         {/* Workspace selector widget */}
-        <div className="p-4 border-b border-border/80">
+        <div className="p-4 border-b border-white/10">
           <WorkspaceSwitcher />
         </div>
 
         {/* Primary nav list */}
-        <nav className="flex-1 space-y-1.5 p-4 overflow-y-auto">
+        <nav className="flex-1 space-y-1 p-4 overflow-y-auto">
           {navItems.map((item) => {
             const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
             return (
@@ -125,10 +126,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all duration-200",
+                  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium spring-transition relative",
                   isActive
-                    ? "bg-primary text-primary-foreground shadow shadow-primary/10"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/80"
+                    ? "bg-primary text-white font-semibold shadow-md shadow-primary/20"
+                    : "text-zinc-400 hover:text-white hover:bg-white/5"
                 )}
               >
                 {item.icon}
@@ -138,14 +139,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           })}
         </nav>
 
-        {/* Sidebar Footer User Details */}
-        <div className="p-4 border-t border-border/80 space-y-3">
-          <div className="flex items-center justify-between px-2.5 py-1 text-[10px] text-muted-foreground font-semibold bg-zinc-950/45 rounded border border-border/60">
-            <span className="flex items-center gap-1.5 font-mono">
-              <Keyboard className="h-3.5 w-3.5" />
+        {/* Sidebar Footer Search & User Details */}
+        <div className="p-4 border-t border-white/10 space-y-3">
+          <div className="flex items-center justify-between px-3 py-2 text-[11px] text-zinc-400 font-mono bg-black/60 rounded-xl border border-white/10">
+            <span className="flex items-center gap-1.5">
+              <Keyboard className="h-3.5 w-3.5 text-primary" />
               Ctrl + K
             </span>
-            <span>Search</span>
+            <span className="flex items-center gap-1 text-[10px] text-zinc-500">
+              <Search className="h-3 w-3" /> Search
+            </span>
           </div>
           <UserProfileMenu />
         </div>
@@ -153,16 +156,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Mobile Top navbar Header */}
       <div className="flex flex-col flex-1 min-w-0">
-        <header className="md:hidden flex h-16 items-center justify-between px-6 border-b border-border bg-card/45 backdrop-blur-md z-20">
+        <header className="md:hidden flex h-16 items-center justify-between px-6 border-b border-white/10 bg-zinc-950/90 backdrop-blur-xl z-20">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-violet-600">
               <Activity className="h-4.5 w-4.5 text-white" />
             </div>
-            <span className="font-bold tracking-tight">FlowForge AI</span>
+            <span className="font-bold text-base text-white tracking-tight">FlowForge AI</span>
           </div>
           <button
             onClick={() => setMobileMenuOpen((prev) => !prev)}
-            className="p-1 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground"
+            className="p-1.5 rounded-xl hover:bg-white/10 text-zinc-400 hover:text-white"
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -170,7 +173,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Mobile menu overlay */}
         {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-x-0 top-16 bg-card border-b border-border shadow-xl py-4 px-6 space-y-4 z-20 animate-fade-in glass-panel">
+          <div className="md:hidden fixed inset-x-0 top-16 bg-zinc-950 border-b border-white/10 shadow-2xl py-5 px-6 space-y-5 z-20 animate-fade-in glass-panel">
             <WorkspaceSwitcher />
             <nav className="space-y-1">
               {navItems.map((item) => {
@@ -181,8 +184,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all",
-                      isActive ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"
+                      "flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all",
+                      isActive ? "bg-primary text-white font-bold" : "text-zinc-400 hover:bg-white/5 hover:text-white"
                     )}
                   >
                     {item.icon}
@@ -191,7 +194,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 );
               })}
             </nav>
-            <div className="border-t border-border/80 pt-4">
+            <div className="border-t border-white/10 pt-4">
               <UserProfileMenu />
             </div>
           </div>

@@ -43,7 +43,7 @@ export default function LoginPage() {
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-violet-600 shadow-lg shadow-primary/20">
           <Activity className="h-5 w-5 text-white" />
         </div>
-        <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/75 bg-clip-text text-transparent">
+        <span className="text-xl font-bold tracking-tight text-foreground">
           FlowForge AI
         </span>
       </div>

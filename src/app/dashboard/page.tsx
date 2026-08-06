@@ -124,12 +124,10 @@ export default function DashboardPage() {
         const snap = await getDocs(wfsQuery);
         const list = snap.docs.map((doc) => doc.data() as Workflow);
         setWorkflows(list);
-        // If user already has real workflows, let's disable sandbox mode by default!
         if (list.length > 0) {
           Promise.resolve().then(() => setSandboxMode(false));
         }
       } catch {
-        // Fall back to sandbox if permission/config keys missing
         Promise.resolve().then(() => setSandboxMode(true));
       }
     };
@@ -140,36 +138,38 @@ export default function DashboardPage() {
     router.push("/dashboard/workflows");
   };
 
-  // Compute metrics based on display mode
   const activeWfsCount = sandboxMode ? 2 : workflows.filter((w) => w.isActive).length;
   const totalWfsCount = sandboxMode ? mockWorkflows.length : workflows.length;
   const successRate = sandboxMode ? "98.2%" : "0%";
-  const runsCount = sandboxMode ? 2640 : 0; // Starts at zero for real users
+  const runsCount = sandboxMode ? 2640 : 0;
 
   return (
-    <div className="flex-1 p-6 space-y-8 max-w-7xl mx-auto w-full font-sans">
-      {/* Top Banner Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="flex-1 p-6 md:p-8 space-y-8 max-w-7xl mx-auto w-full font-sans">
+      {/* Top Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
+          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary font-semibold">
+            Workspace Overview
+          </span>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white mt-1">
             Welcome back, {profile?.displayName || "Developer"}
           </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Monitor flow runs, successes, API usage metrics, and node executions.
+          <p className="text-xs text-zinc-400 mt-1">
+            Monitor flow runs, execution latency, API keys, and node executions in real time.
           </p>
         </div>
 
         {/* Sandbox switcher & quick button panel */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-zinc-950/60 border border-border px-3 py-1.5 rounded-lg text-xs font-semibold glass-panel select-none">
-            <span className="text-[10px] text-muted-foreground uppercase font-bold">
-              Demo Sandbox Mode
+          <div className="flex items-center gap-2.5 bg-black/60 border border-white/10 px-3.5 py-2 rounded-xl text-xs font-medium glass-panel select-none">
+            <span className="text-[10px] text-zinc-400 font-mono uppercase tracking-wider">
+              Demo Sandbox
             </span>
             <button
               onClick={() => setSandboxMode((prev) => !prev)}
               className={cn(
                 "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border border-transparent transition-colors duration-200 ease-in-out focus:outline-none",
-                sandboxMode ? "bg-primary" : "bg-muted"
+                sandboxMode ? "bg-primary" : "bg-white/10"
               )}
             >
               <span
@@ -181,313 +181,334 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          <Button variant="primary" size="sm" onClick={handleCreateWorkflow} className="flex gap-2">
-            <Plus className="h-4 w-4" />
-            New Workflow
-          </Button>
+          <button
+            onClick={handleCreateWorkflow}
+            className="group h-9 rounded-xl bg-primary hover:bg-primary/90 text-white px-4 text-xs font-semibold flex items-center gap-2 shadow-md shadow-primary/20 transition-all active:scale-[0.98]"
+          >
+            <Plus className="h-4 w-4 text-white" />
+            <span>New Workflow</span>
+          </button>
         </div>
       </div>
 
-      {/* Analytics stats metrics row grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="glass-panel">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Total Runs
-            </CardTitle>
-            <Activity className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{runsCount}</div>
-            <p className="text-[10px] text-emerald-500 font-semibold flex items-center gap-0.5 mt-1">
-              <TrendingUp className="h-3 w-3" />
+      {/* Doppelrand Stats Metrics Grid */}
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        {/* Metric 1 */}
+        <div className="bezel-shell">
+          <div className="bezel-core p-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
+                Total Runs
+              </span>
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Activity className="h-4 w-4" />
+              </div>
+            </div>
+            <div className="text-2xl font-bold text-white">{runsCount}</div>
+            <p className="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
+              <TrendingUp className="h-3.5 w-3.5" />
               +12.4% from last week
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="glass-panel">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Success Rate
-            </CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{successRate}</div>
-            <p className="text-[10px] text-muted-foreground mt-1">
-              Maintained above 98% target bounds
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-panel">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Active Flows
-            </CardTitle>
-            <Zap className="h-4 w-4 text-amber-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {activeWfsCount} <span className="text-sm font-normal text-muted-foreground">/ {totalWfsCount}</span>
+        {/* Metric 2 */}
+        <div className="bezel-shell">
+          <div className="bezel-core p-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
+                Success Rate
+              </span>
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
+                <CheckCircle2 className="h-4 w-4" />
+              </div>
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1">
-              Automations active and monitoring
+            <div className="text-2xl font-bold text-white">{successRate}</div>
+            <p className="text-[11px] text-zinc-400">
+              Target 98%+ SLA maintained
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="glass-panel">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              AI Token Savings
-            </CardTitle>
-            <Sparkles className="h-4 w-4 text-violet-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {sandboxMode ? "42k" : "0"} <span className="text-sm font-normal text-muted-foreground">tokens</span>
+        {/* Metric 3 */}
+        <div className="bezel-shell">
+          <div className="bezel-core p-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
+                Active Flows
+              </span>
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400">
+                <Zap className="h-4 w-4" />
+              </div>
             </div>
-            <p className="text-[10px] text-primary font-semibold mt-1">
-              Gemini integration savings
+            <div className="text-2xl font-bold text-white">
+              {activeWfsCount} <span className="text-xs font-normal text-zinc-500">/ {totalWfsCount} total</span>
+            </div>
+            <p className="text-[11px] text-zinc-400">
+              Live automated triggers active
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+
+        {/* Metric 4 */}
+        <div className="bezel-shell">
+          <div className="bezel-core p-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
+                AI Token Savings
+              </span>
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-violet-500/10 text-violet-400">
+                <Sparkles className="h-4 w-4" />
+              </div>
+            </div>
+            <div className="text-2xl font-bold text-white">
+              {sandboxMode ? "42k" : "0"} <span className="text-xs font-normal text-zinc-500">tokens</span>
+            </div>
+            <p className="text-[11px] text-primary font-medium">
+              Gemini 1.5 Pro compiler active
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Main Charts & Analytics Block */}
+      {/* Main Charts Block */}
       <div className="grid gap-6 md:grid-cols-7">
-        <Card className="col-span-4 glass-panel">
-          <CardHeader>
-            <CardTitle>Daily Activity Runs</CardTitle>
-            <CardDescription className="text-xs">
-              Daily trigger runs split by execution success/failure status.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={mockActivityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorSuccess" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    borderColor: "hsl(var(--border))",
-                    color: "hsl(var(--foreground))",
-                    fontSize: 12,
-                    borderRadius: 8,
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="success"
-                  stroke="hsl(var(--primary))"
-                  fillOpacity={1}
-                  fill="url(#colorSuccess)"
-                  strokeWidth={2}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        <div className="md:col-span-4 bezel-shell">
+          <div className="bezel-core p-6 space-y-4">
+            <div>
+              <h3 className="text-base font-bold text-white">Daily Run Execution Telemetry</h3>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Daily trigger executions compiled by successful vs failed runs.
+              </p>
+            </div>
+            <div className="h-72 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={mockActivityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorSuccess" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="day" stroke="#71717A" fontSize={11} tickLine={false} />
+                  <YAxis stroke="#71717A" fontSize={11} tickLine={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#0E0E11",
+                      borderColor: "rgba(255,255,255,0.1)",
+                      color: "#FAFAFA",
+                      fontSize: 12,
+                      borderRadius: 12,
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="success"
+                    stroke="hsl(var(--primary))"
+                    fillOpacity={1}
+                    fill="url(#colorSuccess)"
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
 
-        {/* Success vs Fail breakdown BarChart */}
-        <Card className="col-span-3 glass-panel">
-          <CardHeader>
-            <CardTitle>Success vs Error Ratio</CardTitle>
-            <CardDescription className="text-xs">
-              Absolute ratio of successful node executions.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={mockActivityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    borderColor: "hsl(var(--border))",
-                    color: "hsl(var(--foreground))",
-                    fontSize: 12,
-                    borderRadius: 8,
-                  }}
-                />
-                <Bar dataKey="success" fill="hsl(var(--primary))" stackId="a" radius={[0, 0, 0, 0]} />
-                <Bar dataKey="fail" fill="hsl(var(--destructive))" stackId="a" radius={[3, 3, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        {/* Ratio Chart */}
+        <div className="md:col-span-3 bezel-shell">
+          <div className="bezel-core p-6 space-y-4">
+            <div>
+              <h3 className="text-base font-bold text-white">Success vs Error Ratio</h3>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Node status breakdown across daily executions.
+              </p>
+            </div>
+            <div className="h-72 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={mockActivityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <XAxis dataKey="day" stroke="#71717A" fontSize={11} tickLine={false} />
+                  <YAxis stroke="#71717A" fontSize={11} tickLine={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#0E0E11",
+                      borderColor: "rgba(255,255,255,0.1)",
+                      color: "#FAFAFA",
+                      fontSize: 12,
+                      borderRadius: 12,
+                    }}
+                  />
+                  <Bar dataKey="success" fill="hsl(var(--primary))" stackId="a" radius={[0, 0, 0, 0]} />
+                  <Bar dataKey="fail" fill="#EF4444" stackId="a" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Split lists: Recent Workflows & Executions */}
       <div className="grid gap-6 md:grid-cols-2">
         {/* Workflows Panel */}
-        <Card className="glass-panel">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <div>
-              <CardTitle>Recent Workflows</CardTitle>
-              <CardDescription className="text-xs">
-                Active workflow canvas blueprints ready for runs.
-              </CardDescription>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs font-semibold"
-              onClick={() => router.push("/dashboard/workflows")}
-            >
-              View all
-            </Button>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {sandboxMode ? (
-              mockWorkflows.map((wf) => (
-                <div
-                  key={wf.id}
-                  onClick={() => router.push(`/dashboard/builder/${wf.id}`)}
-                  className="group flex items-center justify-between p-3.5 rounded-lg border border-border bg-zinc-950/30 hover:bg-zinc-900/60 hover:border-border/80 transition-all cursor-pointer"
-                >
-                  <div className="space-y-1.5 min-w-0 pr-4">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-xs text-foreground group-hover:text-primary transition-colors truncate">
-                        {wf.name}
-                      </span>
-                      <span
-                        className={cn(
-                          "px-2 py-0.5 rounded text-[9px] font-bold tracking-wide uppercase border",
-                          wf.isActive
-                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                            : "bg-muted text-muted-foreground border-border/80"
-                        )}
-                      >
-                        {wf.isActive ? "Active" : "Draft"}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-muted-foreground truncate leading-relaxed">
-                      {wf.description}
-                    </p>
-                  </div>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0 group-hover:translate-x-1 transition-all" />
-                </div>
-              ))
-            ) : workflows.length === 0 ? (
-              <div className="py-8 text-center text-xs text-muted-foreground space-y-4 border border-dashed border-border rounded-xl">
-                <Layers className="h-8 w-8 mx-auto text-muted/60" />
-                <p className="font-semibold">No workflows created in this workspace yet</p>
-                <Button size="sm" variant="outline" onClick={handleCreateWorkflow}>
-                  Create automation
-                </Button>
-              </div>
-            ) : (
-              workflows.map((wf) => (
-                <div
-                  key={wf.id}
-                  onClick={() => router.push(`/dashboard/builder/${wf.id}`)}
-                  className="group flex items-center justify-between p-3.5 rounded-lg border border-border bg-zinc-950/30 hover:bg-zinc-900/60 hover:border-border/80 transition-all cursor-pointer"
-                >
-                  <div className="space-y-1.5 min-w-0 pr-4">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-xs text-foreground group-hover:text-primary transition-colors truncate">
-                        {wf.name}
-                      </span>
-                      <span
-                        className={cn(
-                          "px-2 py-0.5 rounded text-[9px] font-bold tracking-wide uppercase border",
-                          wf.isActive
-                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                            : "bg-muted text-muted-foreground border-border/80"
-                        )}
-                      >
-                        {wf.isActive ? "Active" : "Draft"}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-muted-foreground truncate leading-relaxed">
-                      {wf.description}
-                    </p>
-                  </div>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0 group-hover:translate-x-1 transition-all" />
-                </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Executions Logs Panel */}
-        <Card className="glass-panel">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <div>
-              <CardTitle>Recent Run Logs</CardTitle>
-              <CardDescription className="text-xs">
-                Timeline logs for the latest workspace trigger runs.
-              </CardDescription>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs font-semibold"
-              onClick={() => router.push("/dashboard/executions")}
-            >
-              View all
-            </Button>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {sandboxMode ? (
-              mockExecutions.map((run) => (
-                <div
-                  key={run.id}
-                  className="flex items-center justify-between p-3 rounded-lg border border-border bg-zinc-950/10"
-                >
-                  <div className="flex items-center gap-3 min-w-0 pr-2">
-                    {run.status === "success" ? (
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                    ) : (
-                      <XCircle className="h-4 w-4 text-destructive shrink-0" />
-                    )}
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-bold text-xs text-foreground truncate leading-none mb-0.5">
-                          {run.workflowName}
-                        </p>
-                        <span className="text-[9px] text-muted-foreground font-mono leading-none">
-                          {run.id}
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-muted-foreground flex items-center gap-1">
-                        <span>{run.triggerType}</span>
-                        <span>•</span>
-                        <span className="flex items-center gap-0.5">
-                          <Clock className="h-3 w-3" />
-                          {formatDuration(run.durationMs)}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-
-                  <span className="text-[10px] text-muted-foreground font-semibold shrink-0">
-                    {formatDateTime(run.startTime)}
-                  </span>
-                </div>
-              ))
-            ) : (
-              <div className="py-8 text-center text-xs text-muted-foreground space-y-3 border border-dashed border-border rounded-xl">
-                <Clock className="h-8 w-8 mx-auto text-muted/60" />
-                <p className="font-semibold">No workflow executions triggered yet</p>
-                <p className="text-[11px] max-w-[240px] mx-auto text-muted-foreground leading-normal">
-                  Publish a workflow with triggers to start generating run analytics logs.
+        <div className="bezel-shell">
+          <div className="bezel-core p-6 space-y-5">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div>
+                <h3 className="text-base font-bold text-white">Recent Workflows</h3>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Workflow node blueprints configured in this workspace.
                 </p>
               </div>
-            )}
-          </CardContent>
-        </Card>
+              <button
+                onClick={() => router.push("/dashboard/workflows")}
+                className="text-xs font-semibold text-primary hover:underline"
+              >
+                View all
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {sandboxMode ? (
+                mockWorkflows.map((wf) => (
+                  <div
+                    key={wf.id}
+                    onClick={() => router.push(`/dashboard/builder/${wf.id}`)}
+                    className="group flex items-center justify-between p-4 rounded-xl border border-white/5 bg-black/40 hover:bg-white/5 hover:border-white/15 transition-all cursor-pointer"
+                  >
+                    <div className="space-y-1 min-w-0 pr-4">
+                      <div className="flex items-center gap-2.5">
+                        <span className="font-bold text-xs text-white group-hover:text-primary transition-colors truncate">
+                          {wf.name}
+                        </span>
+                        <span
+                          className={cn(
+                            "px-2 py-0.5 rounded-full text-[9px] font-mono font-semibold uppercase tracking-wider border",
+                            wf.isActive
+                              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                              : "bg-white/5 text-zinc-400 border-white/10"
+                          )}
+                        >
+                          {wf.isActive ? "Active" : "Draft"}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-zinc-400 truncate leading-relaxed">
+                        {wf.description}
+                      </p>
+                    </div>
+                    <ArrowRight className="h-4 w-4 text-zinc-500 group-hover:text-white shrink-0 group-hover:translate-x-1 transition-all" />
+                  </div>
+                ))
+              ) : workflows.length === 0 ? (
+                <div className="py-8 text-center text-xs text-zinc-400 space-y-3 border border-dashed border-white/10 rounded-xl bg-black/30">
+                  <Layers className="h-8 w-8 mx-auto text-zinc-600" />
+                  <p className="font-semibold text-white">No workflows created yet</p>
+                  <Button size="sm" variant="outline" onClick={handleCreateWorkflow} className="rounded-xl border-white/10 text-xs">
+                    Create first workflow
+                  </Button>
+                </div>
+              ) : (
+                workflows.map((wf) => (
+                  <div
+                    key={wf.id}
+                    onClick={() => router.push(`/dashboard/builder/${wf.id}`)}
+                    className="group flex items-center justify-between p-4 rounded-xl border border-white/5 bg-black/40 hover:bg-white/5 hover:border-white/15 transition-all cursor-pointer"
+                  >
+                    <div className="space-y-1 min-w-0 pr-4">
+                      <div className="flex items-center gap-2.5">
+                        <span className="font-bold text-xs text-white group-hover:text-primary transition-colors truncate">
+                          {wf.name}
+                        </span>
+                        <span
+                          className={cn(
+                            "px-2 py-0.5 rounded-full text-[9px] font-mono font-semibold uppercase tracking-wider border",
+                            wf.isActive
+                              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                              : "bg-white/5 text-zinc-400 border-white/10"
+                          )}
+                        >
+                          {wf.isActive ? "Active" : "Draft"}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-zinc-400 truncate leading-relaxed">
+                        {wf.description}
+                      </p>
+                    </div>
+                    <ArrowRight className="h-4 w-4 text-zinc-500 group-hover:text-white shrink-0 group-hover:translate-x-1 transition-all" />
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Executions Logs Panel */}
+        <div className="bezel-shell">
+          <div className="bezel-core p-6 space-y-5">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div>
+                <h3 className="text-base font-bold text-white">Recent Run Logs</h3>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Timeline diagnostic logs for the latest trigger runs.
+                </p>
+              </div>
+              <button
+                onClick={() => router.push("/dashboard/executions")}
+                className="text-xs font-semibold text-primary hover:underline"
+              >
+                View all
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {sandboxMode ? (
+                mockExecutions.map((run) => (
+                  <div
+                    key={run.id}
+                    className="flex items-center justify-between p-3.5 rounded-xl border border-white/5 bg-black/40"
+                  >
+                    <div className="flex items-center gap-3 min-w-0 pr-2">
+                      {run.status === "success" ? (
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                      ) : (
+                        <XCircle className="h-4 w-4 text-red-400 shrink-0" />
+                      )}
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="font-bold text-xs text-white truncate leading-none mb-0.5">
+                            {run.workflowName}
+                          </p>
+                          <span className="text-[10px] text-zinc-500 font-mono leading-none">
+                            {run.id}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-zinc-400 flex items-center gap-1.5 mt-1 font-mono">
+                          <span>{run.triggerType}</span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1 text-zinc-500">
+                            <Clock className="h-3 w-3" />
+                            {formatDuration(run.durationMs)}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <span className="text-[10px] text-zinc-500 font-mono font-medium shrink-0">
+                      {formatDateTime(run.startTime)}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="py-8 text-center text-xs text-zinc-400 space-y-3 border border-dashed border-white/10 rounded-xl bg-black/30">
+                  <Clock className="h-8 w-8 mx-auto text-zinc-600" />
+                  <p className="font-semibold text-white">No execution logs recorded yet</p>
+                  <p className="text-[11px] max-w-[240px] mx-auto text-zinc-500 leading-normal">
+                    Publish an active workflow to start logging trigger diagnostic runs.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -165,19 +165,20 @@ export const AuthCard: React.FC = () => {
   }
 
   return (
-    <Card className="w-full max-w-md bg-black/60 shadow-2xl border-border/60 glass-panel">
-      <CardHeader className="space-y-1.5 pt-8 text-center">
-        <h2 className="text-2xl font-bold tracking-tight text-foreground">
-          {view === "login" && "Welcome back"}
-          {view === "signup" && "Create an account"}
-          {view === "forgot" && "Reset your password"}
-        </h2>
-        <CardDescription className="text-sm">
-          {view === "login" && "Enter your email to sign in to your dashboard"}
-          {view === "signup" && "Get started with your flow automation workspace"}
-          {view === "forgot" && "We'll send you a link to reset your credentials"}
-        </CardDescription>
-      </CardHeader>
+    <div className="bezel-shell w-full max-w-md shadow-2xl">
+      <div className="bezel-core p-6 md:p-8 space-y-6">
+        <div className="space-y-1.5 text-center">
+          <h2 className="text-2xl font-bold tracking-tight text-white">
+            {view === "login" && "Welcome back"}
+            {view === "signup" && "Create an account"}
+            {view === "forgot" && "Reset your password"}
+          </h2>
+          <p className="text-xs text-zinc-400">
+            {view === "login" && "Enter your email to sign in to your workspace"}
+            {view === "signup" && "Get started with your flow automation workspace"}
+            {view === "forgot" && "We'll send you a link to reset your credentials"}
+          </p>
+        </div>
 
       <CardContent className="space-y-4">
         {submitError && (
@@ -317,31 +318,32 @@ export const AuthCard: React.FC = () => {
         )}
       </CardContent>
 
-      <CardFooter className="justify-center border-t border-border/50 pt-6 pb-8">
-        <p className="text-xs text-muted-foreground">
-          {view === "login" && (
-            <>
-              Don&apos;t have an account?{" "}
-              <button onClick={() => changeView("signup")} className="text-primary hover:underline font-semibold">
-                Sign Up
-              </button>
-            </>
-          )}
-          {view === "signup" && (
-            <>
-              Already have an account?{" "}
+        <div className="flex justify-center border-t border-white/10 pt-5">
+          <p className="text-xs text-zinc-400">
+            {view === "login" && (
+              <>
+                Don&apos;t have an account?{" "}
+                <button onClick={() => changeView("signup")} className="text-primary hover:underline font-semibold">
+                  Sign Up
+                </button>
+              </>
+            )}
+            {view === "signup" && (
+              <>
+                Already have an account?{" "}
+                <button onClick={() => changeView("login")} className="text-primary hover:underline font-semibold">
+                  Sign In
+                </button>
+              </>
+            )}
+            {view === "forgot" && !resetSent && (
               <button onClick={() => changeView("login")} className="text-primary hover:underline font-semibold">
-                Sign In
+                Return to Login
               </button>
-            </>
-          )}
-          {view === "forgot" && !resetSent && (
-            <button onClick={() => changeView("login")} className="text-primary hover:underline font-semibold">
-              Return to Login
-            </button>
-          )}
-        </p>
-      </CardFooter>
-    </Card>
+            )}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };
