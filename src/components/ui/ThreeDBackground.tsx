@@ -30,15 +30,16 @@ export default function ThreeDBackground() {
     };
     window.addEventListener("resize", handleResize);
 
-    // Create 3D particles
-    const particleCount = 120;
+    // Create 3D particles - Electric Cyan & Emerald Steel Palette (No AI purple)
+    const particleCount = 130;
     const particles: Particle[] = [];
     for (let i = 0; i < particleCount; i++) {
+      const colorRoll = Math.random();
       particles.push({
         x: (Math.random() - 0.5) * 2000,
         y: (Math.random() - 0.5) * 2000,
         z: Math.random() * 2000,
-        color: Math.random() > 0.5 ? "124, 58, 237" : "99, 102, 241", // Purple or indigo
+        color: colorRoll > 0.6 ? "6, 182, 212" : colorRoll > 0.3 ? "14, 165, 233" : "16, 185, 129",
       });
     }
 
@@ -56,7 +57,7 @@ export default function ThreeDBackground() {
 
     // Animation Loop
     const draw = () => {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
+      ctx.fillStyle = "rgba(7, 9, 14, 0.18)";
       ctx.fillRect(0, 0, width, height);
 
       // Camera rotations based on mouse and timer
@@ -90,7 +91,7 @@ export default function ThreeDBackground() {
 
         // Size based on depth
         const size = Math.max(0.5, scale * 3.5);
-        const alpha = Math.min(1, (1 - rz / 2000) * 0.8);
+        const alpha = Math.min(1, (1 - rz / 2000) * 0.85);
 
         if (sx >= 0 && sx <= width && sy >= 0 && sy <= height) {
           projected.push({ sx, sy, size, alpha, color: p.color });
@@ -114,7 +115,6 @@ export default function ThreeDBackground() {
           const dy = p1.sy - p2.sy;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          // Only draw lines for close particles
           if (dist < 85) {
             const lineAlpha = Math.min(p1.alpha, p2.alpha) * (1 - dist / 85) * 0.22;
             ctx.beginPath();
@@ -141,7 +141,7 @@ export default function ThreeDBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none z-0 mix-blend-screen opacity-35"
+      className="absolute inset-0 w-full h-full pointer-events-none z-0 mix-blend-screen opacity-40"
       style={{ filter: "blur(0.5px)" }}
     />
   );

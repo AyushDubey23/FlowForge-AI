@@ -104,8 +104,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <aside className="hidden md:flex flex-col w-64 border-r border-white/10 bg-zinc-950/80 backdrop-blur-xl shrink-0 z-20">
         {/* Brand Header */}
         <div className="flex h-16 items-center px-6 gap-3 border-b border-white/10">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-violet-600 shadow-md shadow-primary/20">
-            <Activity className="h-4.5 w-4.5 text-white" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 shadow-md shadow-cyan-500/20">
+            <Activity className="h-4.5 w-4.5 text-black font-bold" />
           </div>
           <span className="font-bold text-base tracking-tight text-white">
             FlowForge AI
@@ -158,8 +158,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex flex-col flex-1 min-w-0">
         <header className="md:hidden flex h-16 items-center justify-between px-6 border-b border-white/10 bg-zinc-950/90 backdrop-blur-xl z-20">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-violet-600">
-              <Activity className="h-4.5 w-4.5 text-white" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500">
+              <Activity className="h-4.5 w-4.5 text-black font-bold" />
             </div>
             <span className="font-bold text-base text-white tracking-tight">FlowForge AI</span>
           </div>
