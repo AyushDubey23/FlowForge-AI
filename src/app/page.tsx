@@ -27,7 +27,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import ThreeDBackground from "@/components/ui/ThreeDBackground";
-import ScrollVideoShowcase from "@/components/ui/ScrollVideoShowcase";
 
 // Interactive Workflow Simulator nodes data
 const simulatorNodes = [
@@ -267,9 +266,6 @@ export default function LandingPage() {
           </button>
         </div>
       </motion.section>
-
-      {/* Flagship Vertical-to-Horizontal Pinning Scroll Showcase */}
-      <ScrollVideoShowcase />
 
       {/* Interactive Doppelrand Playground Simulator Block */}
       <motion.section
