@@ -38,13 +38,13 @@
 
 :root {
   /* Electric Cyan / Cold Steel Dark Palette (Bans AI Purple) */
-  --background: 220 33% 4%;
+  --background: 220 33% 3.5%;
   --foreground: 210 40% 98%;
   
-  --card: 220 28% 6%;
+  --card: 220 28% 5.5%;
   --card-foreground: 210 40% 98%;
   
-  --popover: 220 28% 5%;
+  --popover: 220 28% 4.5%;
   --popover-foreground: 210 40% 98%;
   
   /* Primary Accent: Electric Cyan / Steel Blue #0284C7 */
@@ -81,6 +81,25 @@ body {
   color: hsl(var(--foreground));
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   font-sans: var(--font-geist-sans);
+}
+
+/* 3D Perspective & Scrollytelling Transforms */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Aurora Light Beam Overlay */
+.aurora-beam {
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(6, 182, 212, 0.12),
+    rgba(16, 185, 129, 0.05) 40%,
+    transparent 80%
+  );
 }
 
 /* High-End Agency Micro-Interactions */
