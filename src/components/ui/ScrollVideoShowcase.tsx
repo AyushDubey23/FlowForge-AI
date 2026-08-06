@@ -38,34 +38,34 @@ export default function ScrollVideoShowcase() {
     offset: ["start start", "end end"],
   });
 
-  // Vertical scroll translates into Horizontal slide across 4 cards: ["0%", "-75%"]
-  const translateX = useTransform(scrollYProgress, [0, 1], ["0%", "-75%"]);
+  // Track translates cleanly during middle 80% of pinned travel (0.1 to 0.9)
+  const translateX = useTransform(scrollYProgress, [0.1, 0.9], ["0%", "-75%"]);
 
-  // 3D Perspective Tilt on Entrance
-  const rotateX = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [15, 0, 0, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.94, 1, 1, 0.96]);
+  // 3D Perspective Tilt on Entrance & Exit
+  const rotateX = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [12, 0, 0, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0.95, 1, 1, 0.96]);
 
   // Timeline progress bar
-  const timelineWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const timelineWidth = useTransform(scrollYProgress, [0.1, 0.9], ["0%", "100%"]);
 
   return (
     <div ref={containerRef} className="relative h-[300vh] w-full">
-      {/* Sticky Viewport Container (Fills exact screen height, zero empty space) */}
+      {/* Sticky Viewport Container (Locked firmly in viewport center) */}
       <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 md:px-8">
         {/* Ambient Aurora Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-cyan-500/10 rounded-full blur-[180px] pointer-events-none" />
         <div className="absolute bottom-10 right-1/4 w-[450px] h-[450px] bg-emerald-500/5 rounded-full blur-[160px] pointer-events-none" />
 
-        {/* Section Header */}
+        {/* Section Header (Clean Developer Copy, No Meta Scroll Mentions) */}
         <div className="text-center space-y-2 mb-6 z-10 max-w-xl">
           <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-cyan-400 font-semibold">
-            Pinning Horizontal Scroll Showcase
+            Generative AI Compilation Engine
           </span>
           <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight text-white">
             Watch Prompt-to-Node Compilation
           </h2>
           <p className="text-xs text-zinc-400">
-            Scroll vertically down to scrub horizontally through the macOS compilation pipeline.
+            Observe how plain language triggers compile into typed AST execution graphs in real time.
           </p>
         </div>
 
@@ -85,11 +85,11 @@ export default function ScrollVideoShowcase() {
               </div>
               <div className="flex items-center gap-2 text-[10px] font-mono text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">
                 <Play className="h-3 w-3 fill-cyan-400" />
-                <span>Horizontal Scroll Engine</span>
+                <span>Interactive compilation stream</span>
               </div>
             </div>
 
-            {/* Horizontal Track Canvas Body (4 Phase Cards Side-by-Side) */}
+            {/* Track Canvas Body (4 Phase Cards Side-by-Side) */}
             <div className="relative w-full overflow-hidden py-8 min-h-[260px]">
               <motion.div
                 style={{ x: translateX }}
