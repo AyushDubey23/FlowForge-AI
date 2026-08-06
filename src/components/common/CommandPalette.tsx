@@ -66,15 +66,12 @@ export const CommandPalette: React.FC = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Autofocus input when opened
+  // Autofocus input instantly when opened (Raycast style: 0ms delay)
   useEffect(() => {
     if (isOpen) {
-      const timer = setTimeout(() => {
-        inputRef.current?.focus();
-        setSelectedIndex(0);
-        setQuery("");
-      }, 50);
-      return () => clearTimeout(timer);
+      inputRef.current?.focus();
+      setSelectedIndex(0);
+      setQuery("");
     }
   }, [isOpen]);
 
