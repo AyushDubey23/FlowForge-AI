@@ -268,6 +268,9 @@ export default function LandingPage() {
         </div>
       </motion.section>
 
+      {/* Flagship Vertical-to-Horizontal Pinning Scroll Showcase */}
+      <ScrollVideoShowcase />
+
       {/* Interactive Doppelrand Playground Simulator Block */}
       <motion.section
         id="sandbox"
