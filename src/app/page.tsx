@@ -138,7 +138,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative h-screen overflow-hidden bg-[#00042e]">
+    <main className="relative h-screen overflow-hidden">
       {/* Background Liquid Metal WebGL Canvas */}
       <LiquidMetalBackground />
 

@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function FeaturesPage() {
   return (
-    <main className="relative min-h-screen bg-[#00042e]">
+    <main className="relative min-h-screen">
       <LiquidMetalBackground />
 
       <div className="fixed inset-0 z-[5] bg-black/50 pointer-events-none" />

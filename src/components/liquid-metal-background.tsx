@@ -11,11 +11,11 @@ export function LiquidMetalBackground() {
   }, []);
 
   if (!mounted) {
-    return <div className="absolute inset-0 -z-10 bg-[#00042e]" />;
+    return <div className="fixed inset-0 z-0 bg-[#00042e]" />;
   }
 
   return (
-    <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none select-none">
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none select-none">
       <LiquidMetal
         width="100%"
         height="100%"
