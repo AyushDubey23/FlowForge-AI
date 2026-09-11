@@ -8,7 +8,6 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
-import CreatorBadge from "@/components/ui/CreatorBadge";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -63,7 +62,6 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans">
         <Providers>
           {children}
-          <CreatorBadge />
         </Providers>
       </body>
     </html>
