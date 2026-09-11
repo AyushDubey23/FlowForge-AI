@@ -1,8 +1,9 @@
 # FlowForge AI ⚡
 
-> Build production-grade automations using natural language.
+> Build production-grade automations using natural language.  
+> 🌐 **Live App**: [https://flowforge-builder.vercel.app/](https://flowforge-builder.vercel.app/) (also available at [flowforge-hub.vercel.app](https://flowforge-hub.vercel.app/))
 
-FlowForge AI is a visual workflow builder powered by Google Gemini and Firebase. Users can describe their automations in plain English (e.g., *"When a GitHub issue is opened, summarize details using AI, then post a notification to Discord"*), and FlowForge will dynamically compile the instructions, generate interactive canvas nodes, configure connection handles, and visualizes the layout on a production-grade React Flow topology.
+FlowForge AI is an autonomous visual workflow builder powered by Google Gemini and Firebase. Users can describe their automations in plain English (e.g., *"When a GitHub issue is opened, summarize details using AI, then post a notification to Discord"*), and FlowForge dynamically compiles the instructions, synthesizes interactive canvas nodes, configures connection handles, and visualizes the layout on a production-grade React Flow topology.
 
 ---
 
