@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Open_Sans,
+  Rubik,
+  Instrument_Serif,
+} from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import CreatorBadge from "@/components/ui/CreatorBadge";
@@ -14,9 +20,34 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const openSans = Open_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-open-sans",
+  display: "swap",
+});
+
+const rubik = Rubik({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-rubik",
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["italic"],
+  variable: "--font-instrument",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "FlowForge AI | Build automations using natural language",
-  description: "Build, edit and run visual workflow automations generated dynamically by AI.",
+  title: "FlowForge AI | Next-Gen AI Workflow Automation Engine",
+  description:
+    "Engineered by Ayush Dubey. Turn prompts and ideas into production-ready visual workflow pipelines with autonomous AI agents.",
+  authors: [{ name: "Ayush Dubey", url: "https://ayushdubey23.vercel.app/" }],
+  creator: "Ayush Dubey",
 };
 
 export default function RootLayout({
@@ -27,9 +58,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${openSans.variable} ${rubik.variable} ${instrumentSerif.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col font-sans">
         <Providers>
           {children}
           <CreatorBadge />
@@ -38,3 +69,4 @@ export default function RootLayout({
     </html>
   );
 }
+
