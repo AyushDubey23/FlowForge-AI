@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { Sparkles, MessageSquare, AlertTriangle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorkflowStore } from "../store/useWorkflowStore";
@@ -130,7 +131,9 @@ export const AiCopilotSidebar: React.FC = () => {
               : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30"
           )}
         >
-          <Sparkles className="h-4 w-4" />
+          <div className="relative h-4 w-4 rounded-md overflow-hidden border border-white/20 shadow-[0_0_8px_rgba(99,102,241,0.4)] shrink-0">
+            <Image src="/icon.png" alt="AI Copilot" width={16} height={16} className="h-full w-full object-cover" />
+          </div>
           AI Copilot
         </button>
         <button
@@ -209,6 +212,14 @@ export const AiCopilotSidebar: React.FC = () => {
                       : "bg-zinc-950/40 border border-border/85 text-foreground self-start mr-auto"
                   )}
                 >
+                  {msg.sender === "ai" && (
+                    <div className="flex items-center gap-1.5 mb-1.5 pb-1 border-b border-white/5">
+                      <div className="relative h-3.5 w-3.5 rounded-full overflow-hidden border border-white/20 shrink-0">
+                        <Image src="/icon.png" alt="FlowForge AI" width={14} height={14} className="h-full w-full object-cover" />
+                      </div>
+                      <span className="text-[10px] font-bold text-indigo-300 font-mono tracking-tight">FlowForge AI</span>
+                    </div>
+                  )}
                   {/* Clean custom renderer for simple markdown tags in AI replies */}
                   <div className="space-y-1 whitespace-pre-line font-sans font-medium text-[11px]">
                     {msg.text

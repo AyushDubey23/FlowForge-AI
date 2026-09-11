@@ -20,6 +20,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 // Simulated/Fallback Activity Timeline logs if Firestore is empty
@@ -178,11 +179,22 @@ export default function ActivityTimelinePage() {
     <div className="flex-1 p-6 space-y-6 max-w-4xl mx-auto w-full font-sans">
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Activity Feed</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Audit history trace log of workflow edits, optimizations, runs, and workspace updates.
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden border border-white/20 shadow-[0_0_15px_rgba(99,102,241,0.35)] shrink-0">
+            <Image
+              src="/icon.png"
+              alt="FlowForge Activity"
+              width={40}
+              height={40}
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Activity Feed</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Audit history trace log of workflow edits, optimizations, runs, and workspace updates.
+            </p>
+          </div>
         </div>
 
         {/* Sandbox toggle badge */}
@@ -246,8 +258,10 @@ export default function ActivityTimelinePage() {
                 </div>
 
                 {/* Profile Avatar letter */}
-                <div className="h-8 w-8 rounded-full border border-border bg-zinc-900/60 flex items-center justify-center text-xs font-bold text-primary shrink-0 select-none">
-                  {act.userPhotoURL ? (
+                <div className="h-8 w-8 rounded-full border border-border bg-zinc-900/60 flex items-center justify-center text-xs font-bold text-primary shrink-0 select-none overflow-hidden">
+                  {act.userName === "FlowForge AI" ? (
+                    <Image src="/icon.png" alt="FlowForge AI" width={32} height={32} className="h-full w-full object-cover rounded-full" />
+                  ) : act.userPhotoURL ? (
                     <img src={act.userPhotoURL} alt={act.userName} className="h-full w-full object-cover rounded-full" />
                   ) : (
                     <span>{initialLetter}</span>

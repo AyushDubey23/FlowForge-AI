@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { Activity } from "lucide-react";
+import Image from "next/image";
 
 export default function Footer() {
   const router = useRouter();
@@ -11,8 +11,14 @@ export default function Footer() {
     <footer className="border-t border-white/10 py-12 px-6 text-xs text-[#8E9BB5] font-mono select-none relative bg-[#0B0E1A]">
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-7 w-7 items-center justify-center rounded bg-[#1E2640] border border-[#FFB454]/40">
-            <Activity className="h-4 w-4 text-[#FFB454]" />
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg overflow-hidden border border-white/20 shadow-[0_0_12px_rgba(99,102,241,0.3)]">
+            <Image
+              src="/icon.png"
+              alt="FlowForge AI"
+              width={28}
+              height={28}
+              className="h-full w-full object-cover"
+            />
           </div>
           <div>
             <span className="font-extrabold text-white tracking-tight">FLOWFORGE.AI</span>

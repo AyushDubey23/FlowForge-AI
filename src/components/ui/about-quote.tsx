@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import DotPattern from "@/components/ui/dot-pattern";
 import { ExternalLink, Sparkles, GraduationCap, Code2 } from "lucide-react";
 
@@ -42,8 +43,14 @@ export function AboutQuote() {
           {/* Ayush Dubey Profile Card */}
           <div className="mt-8 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-xl mx-auto">
             <div className="flex items-center gap-3 text-left">
-              <div className="w-11 h-11 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0">
-                <Code2 className="w-5 h-5 text-indigo-300" />
+              <div className="w-11 h-11 rounded-xl overflow-hidden border border-white/20 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(99,102,241,0.4)]">
+                <Image
+                  src="/icon.png"
+                  alt="FlowForge AI"
+                  width={44}
+                  height={44}
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-white font-open-sans-custom flex items-center gap-1.5">

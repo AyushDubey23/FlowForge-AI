@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 // Mock marketplace template collection for sandbox/offline runs
@@ -243,11 +244,22 @@ export default function TemplatesPage() {
     <div className="flex-1 p-6 space-y-6 max-w-7xl mx-auto w-full font-sans relative">
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Marketplace</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Discover community-curated visual workflow templates, or publish your own flow.
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden border border-white/20 shadow-[0_0_15px_rgba(99,102,241,0.35)] shrink-0">
+            <Image
+              src="/icon.png"
+              alt="FlowForge Marketplace"
+              width={40}
+              height={40}
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Marketplace</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Discover community-curated visual workflow templates, or publish your own flow.
+            </p>
+          </div>
         </div>
         <div className="flex gap-2">
           {templates.length === 0 && (
@@ -320,7 +332,14 @@ export default function TemplatesPage() {
 
               <CardContent className="pb-4">
                 <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                  <span>Publisher: {tpl.author}</span>
+                  <div className="flex items-center gap-1.5">
+                    {tpl.author.includes("FlowForge") && (
+                      <div className="relative h-3.5 w-3.5 rounded-full overflow-hidden border border-white/20 shrink-0">
+                        <Image src="/icon.png" alt="FlowForge" width={14} height={14} className="h-full w-full object-cover" />
+                      </div>
+                    )}
+                    <span>Publisher: {tpl.author}</span>
+                  </div>
                   <span className="flex items-center gap-1">
                     <Download className="h-3.5 w-3.5" />
                     {tpl.downloadsCount} installs

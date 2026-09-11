@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   BookOpen,
   ArrowLeft,
@@ -189,7 +190,7 @@ service cloud.firestore {
 
       {/* Docs Header */}
       <header className="h-16 border-b border-border bg-black/60 backdrop-blur-md flex items-center justify-between px-6 z-20 shrink-0 select-none">
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="icon"
@@ -198,7 +199,21 @@ service cloud.firestore {
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <span className="font-bold text-sm">Documentation Portal</span>
+          <div className="flex items-center gap-2">
+            <div className="relative flex h-7 w-7 items-center justify-center rounded-lg overflow-hidden border border-white/20 shadow-[0_0_12px_rgba(99,102,241,0.4)] shrink-0">
+              <Image
+                src="/icon.png"
+                alt="FlowForge AI"
+                width={28}
+                height={28}
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="font-bold text-sm text-white">FlowForge</span>
+              <span className="text-xs text-muted-foreground">Documentation</span>
+            </div>
+          </div>
         </div>
         <Button variant="outline" size="sm" onClick={() => router.push("/dashboard")} className="h-8 text-xs border-border/60">
           Open Console

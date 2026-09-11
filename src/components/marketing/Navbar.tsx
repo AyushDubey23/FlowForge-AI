@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Activity, ArrowRight, Menu, X } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, Menu, X } from "lucide-react";
 import RippleButton from "./RippleButton";
 
 export default function Navbar() {
@@ -26,11 +27,17 @@ export default function Navbar() {
           data-cursor="FlowForge"
           className="flex items-center gap-3 cursor-pointer group"
         >
-          <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-[#1E2640] border border-[#FFB454]/40 group-hover:border-[#FFB454] transition-colors">
-            <Activity className="h-4 w-4 text-[#FFB454] group-hover:rotate-12 transition-transform" />
+          <div className="relative flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden border border-white/20 shadow-[0_0_12px_rgba(99,102,241,0.4)] group-hover:border-white/40 transition-colors">
+            <Image
+              src="/icon.png"
+              alt="FlowForge AI"
+              width={32}
+              height={32}
+              className="h-full w-full object-cover"
+            />
             <span className="absolute -top-1 -right-1 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6EE7B7] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#6EE7B7]"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
             </span>
           </div>
           <div className="flex flex-col">

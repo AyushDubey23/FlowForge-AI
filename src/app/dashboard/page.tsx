@@ -18,6 +18,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -147,16 +148,33 @@ export default function DashboardPage() {
     <div className="flex-1 p-6 md:p-8 space-y-8 max-w-7xl mx-auto w-full font-sans">
       {/* Top Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
-        <div>
-          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary font-semibold">
-            Workspace Overview
-          </span>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white mt-1">
-            Welcome back, {profile?.displayName || "Developer"}
-          </h1>
-          <p className="text-xs text-zinc-400 mt-1">
-            Monitor flow runs, execution latency, API keys, and node executions in real time.
-          </p>
+        <div className="flex items-center gap-4">
+          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl overflow-hidden border border-white/20 shadow-[0_0_25px_rgba(99,102,241,0.35)] shrink-0 bg-white/5 p-0.5">
+            <Image
+              src="/icon.png"
+              alt="FlowForge AI"
+              width={56}
+              height={56}
+              className="h-full w-full object-cover rounded-xl"
+              priority
+            />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary font-semibold">
+                Workspace Overview
+              </span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/25">
+                FlowForge AI v2.4
+              </span>
+            </div>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white mt-1">
+              Welcome back, {profile?.displayName || "Developer"}
+            </h1>
+            <p className="text-xs text-zinc-400 mt-1">
+              Monitor flow runs, execution latency, API keys, and node executions in real time.
+            </p>
+          </div>
         </div>
 
         {/* Sandbox switcher & quick button panel */}

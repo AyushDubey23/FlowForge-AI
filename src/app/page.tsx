@@ -11,6 +11,7 @@ import { ContactCard } from "@/components/ui/contact-card";
 import { AboutQuote } from "@/components/ui/about-quote";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 export default function Home() {
@@ -161,8 +162,16 @@ export default function Home() {
         >
           <div className="mx-auto max-w-4xl">
             <div className="text-center px-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-semibold uppercase tracking-wider text-indigo-200 mb-6 backdrop-blur-sm">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-300" />
+              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-semibold uppercase tracking-wider text-indigo-200 mb-6 backdrop-blur-sm shadow-[0_0_15px_rgba(99,102,241,0.25)]">
+                <div className="relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full overflow-hidden border border-white/20 shadow-sm">
+                  <Image
+                    src="/icon.png"
+                    alt="FlowForge"
+                    width={20}
+                    height={20}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
                 <span>Next-Gen Autonomous Workflow Engine</span>
               </div>
 

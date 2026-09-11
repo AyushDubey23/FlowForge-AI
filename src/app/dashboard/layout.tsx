@@ -20,6 +20,7 @@ import {
   Search,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -43,9 +44,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (loading) {
     return (
-      <div className="flex min-h-screen flex-1 flex-col items-center justify-center bg-black">
+      <div className="flex min-h-screen flex-1 flex-col items-center justify-center bg-black font-mono">
         <div className="flex flex-col items-center gap-4">
-          <Activity className="h-10 w-10 animate-pulse text-primary" />
+          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl overflow-hidden border border-white/20 shadow-[0_0_30px_rgba(99,102,241,0.5)] animate-pulse">
+            <Image
+              src="/icon.png"
+              alt="FlowForge AI"
+              width={56}
+              height={56}
+              className="h-full w-full object-cover"
+              priority
+            />
+          </div>
           <p className="text-xs font-medium uppercase tracking-widest text-zinc-500 font-mono">
             Loading Workspace...
           </p>
@@ -103,14 +113,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Sidebar - Desktop Agency Layout */}
       <aside className="hidden md:flex flex-col w-64 border-r border-white/10 bg-zinc-950/80 backdrop-blur-xl shrink-0 z-20">
         {/* Brand Header */}
-        <div className="flex h-16 items-center px-6 gap-3 border-b border-white/10">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 shadow-md shadow-cyan-500/20">
-            <Activity className="h-4.5 w-4.5 text-black font-bold" />
+        <Link
+          href="/dashboard"
+          className="flex h-16 items-center px-6 gap-3 border-b border-white/10 hover:opacity-90 transition-opacity"
+        >
+          <div className="relative flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden border border-white/20 shadow-[0_0_15px_rgba(99,102,241,0.4)] shrink-0">
+            <Image
+              src="/icon.png"
+              alt="FlowForge AI"
+              width={32}
+              height={32}
+              className="h-full w-full object-cover"
+              priority
+            />
           </div>
-          <span className="font-bold text-base tracking-tight text-white">
-            FlowForge AI
-          </span>
-        </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-base tracking-tight text-white flex items-center gap-1">
+              FlowForge<span className="text-indigo-400">AI</span>
+            </span>
+            <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-mono">Console</span>
+          </div>
+        </Link>
 
         {/* Workspace selector widget */}
         <div className="p-4 border-b border-white/10">
@@ -157,12 +180,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Mobile Top navbar Header */}
       <div className="flex flex-col flex-1 min-w-0">
         <header className="md:hidden flex h-16 items-center justify-between px-6 border-b border-white/10 bg-zinc-950/90 backdrop-blur-xl z-20">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500">
-              <Activity className="h-4.5 w-4.5 text-black font-bold" />
+          <Link href="/dashboard" className="flex items-center gap-2.5">
+            <div className="relative flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden border border-white/20 shadow-[0_0_12px_rgba(99,102,241,0.4)] shrink-0">
+              <Image
+                src="/icon.png"
+                alt="FlowForge AI"
+                width={32}
+                height={32}
+                className="h-full w-full object-cover"
+              />
             </div>
-            <span className="font-bold text-base text-white tracking-tight">FlowForge AI</span>
-          </div>
+            <span className="font-bold text-base text-white tracking-tight flex items-center gap-1">
+              FlowForge<span className="text-indigo-400">AI</span>
+            </span>
+          </Link>
           <button
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             className="p-1.5 rounded-xl hover:bg-white/10 text-zinc-400 hover:text-white"

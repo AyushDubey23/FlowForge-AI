@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const loadRazorpayScript = () => {
@@ -277,11 +278,22 @@ export default function SettingsPage() {
   return (
     <div className="flex-1 p-6 space-y-6 max-w-4xl mx-auto w-full font-sans">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Workspace Settings</h1>
-        <p className="text-xs text-muted-foreground mt-0.5">
-          Manage developer credentials, workspace members, and profile settings.
-        </p>
+      <div className="flex items-center gap-3">
+        <div className="relative flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden border border-white/20 shadow-[0_0_15px_rgba(99,102,241,0.35)] shrink-0">
+          <Image
+            src="/icon.png"
+            alt="FlowForge Settings"
+            width={40}
+            height={40}
+            className="h-full w-full object-cover"
+          />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Workspace Settings</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Manage developer credentials, workspace members, and profile settings.
+          </p>
+        </div>
       </div>
 
       {/* Tabs Navigation */}
@@ -581,6 +593,9 @@ export default function SettingsPage() {
                     <Sparkles className="h-3 w-3" />
                     {activeWorkspace?.tier === "pro" ? "Active Plan" : "Most Popular"}
                   </span>
+                  <div className="relative h-6 w-6 rounded-lg overflow-hidden border border-white/20 shadow-[0_0_8px_rgba(99,102,241,0.4)]">
+                    <Image src="/icon.png" alt="FlowForge Pro" width={24} height={24} className="h-full w-full object-cover" />
+                  </div>
                 </div>
                 <CardTitle className="text-xl font-bold mt-2">FlowForge Pro Architect</CardTitle>
                 <CardDescription className="text-xs">
